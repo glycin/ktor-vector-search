@@ -1,5 +1,6 @@
 package com.glycin.weaviate
 
+import com.google.gson.internal.LinkedTreeMap
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.weaviate.client.Config
 import io.weaviate.client.WeaviateClient
@@ -8,6 +9,9 @@ import io.weaviate.client.v1.graphql.query.argument.NearTextArgument
 import io.weaviate.client.v1.graphql.query.fields.Field
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.decodeFromJsonElement
 import java.io.File
 import java.net.URI
 import java.util.*
@@ -68,10 +72,20 @@ class WeaviateRepository {
             return emptyList()
         }
 
-        return Json.encodeToString(result.result.data).let { json ->
-            Json.decodeFromString<Data>(json).get.icon ?: emptyList()
+        @Suppress("UNCHECKED_CAST")
+        val icons = (result.result.data as Map<*, *>).let { dataMap ->
+            dataMap["Get"] as Map<*, *>
+        }.let { getMap ->
+            getMap["Icon"] as List<Map<*, *>>
+        }
+
+        return icons.map { iconMap ->
+            WeaviateIcon(
+                text = iconMap["text"]?.toString() ?: "",
+                image = iconMap["image"]?.toString() ?: "",
+            )
         }
     }
-
+    
     private fun WeaviateClient.hasSchemaWithName(name: String): Boolean = schema().exists().withClassName(name).run().result
 }

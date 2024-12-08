@@ -27,7 +27,7 @@ fun Application.configureRouting(
                 call.respond(iconService.searchImage(searchText))
             }
 
-            post("/directory") {
+            post("/ingest/directory") {
                 try {
                     val path = call.receive<IconDirectoryPath>()
                     call.respond(iconService.loadImagesInDb(path.path))

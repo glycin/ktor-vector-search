@@ -17,6 +17,8 @@ data class Get(
 
 @Serializable
 data class WeaviateIcon(
+    @SerialName("text")
+    val text: String,
     @SerialName("image")
     val image: String,
 )

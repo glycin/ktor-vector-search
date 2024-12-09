@@ -23,7 +23,7 @@ class IconService(
     }
 
     fun searchImage(text: String): List<Icon> {
-        return weaviateRepository.searchImageNearText(text, 2).map {
+        return weaviateRepository.searchImageNearText(text, 10).map {
             it.toIcon()
         }
     }

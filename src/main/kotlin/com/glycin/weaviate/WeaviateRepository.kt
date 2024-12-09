@@ -1,17 +1,11 @@
 package com.glycin.weaviate
 
-import com.google.gson.internal.LinkedTreeMap
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.weaviate.client.Config
 import io.weaviate.client.WeaviateClient
 import io.weaviate.client.v1.data.model.WeaviateObject
 import io.weaviate.client.v1.graphql.query.argument.NearTextArgument
 import io.weaviate.client.v1.graphql.query.fields.Field
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.decodeFromJsonElement
 import java.io.File
 import java.net.URI
 import java.util.*

@@ -22,7 +22,7 @@ class WeaviateRepository {
         }
 
         val batcher = client.batch().objectsBatcher()
-        LOG.info { "Importing bob ross paintings" }
+        LOG.info { "Importing icons!" }
 
         imagePaths.forEachIndexed { i, uri ->
             val icon = File(uri)

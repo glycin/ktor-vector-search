@@ -1,7 +1,6 @@
 package com.glycin.icon
 
 import com.glycin.util.asyncFlatMap
-import com.glycin.util.asyncMap
 import com.glycin.weaviate.WeaviateIcon
 import com.glycin.weaviate.WeaviateRepository
 import io.github.oshai.kotlinlogging.KotlinLogging

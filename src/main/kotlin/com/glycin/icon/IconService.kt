@@ -1,8 +1,12 @@
 package com.glycin.icon
 
+import com.glycin.util.asyncFlatMap
+import com.glycin.util.asyncMap
 import com.glycin.weaviate.WeaviateIcon
 import com.glycin.weaviate.WeaviateRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import java.io.File
 
 private val LOG = KotlinLogging.logger {}
@@ -27,6 +31,26 @@ class IconService(
             it.toIcon()
         }
     }
+
+    suspend fun searchImagesAsync(texts: List<String>): List<Icon> = withContext (Dispatchers.IO + SupervisorJob()) {
+        texts.asyncFlatMap { text ->
+            weaviateRepository.searchImageNearText(text, 10).map {
+                it.toIcon()
+            }
+        }
+    }
+
+    fun searchImagesFlow(texts: List<String>): Flow<Icon> = channelFlow {
+        texts.asyncFlatMap() { text ->
+            weaviateRepository.searchImageNearText(text, 10).map {
+                send(it.toIcon())
+            }
+        }
+
+        invokeOnClose {
+            close()
+        }
+    }.flowOn(Dispatchers.IO)
 
     private fun WeaviateIcon.toIcon(): Icon = Icon(
         text = text,

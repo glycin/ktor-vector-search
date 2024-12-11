@@ -12,6 +12,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -49,6 +50,7 @@ fun Application.configureRouting(
                         iconService.searchImagesFlow(texts.searchTexts).collect { icon ->
                             write(Json.encodeToString(icon))
                             write("\n")
+                            flush()
                         }
                     }
                 } catch(e: JsonConvertException) {

@@ -31,7 +31,7 @@ class IconService(
         }
     }
 
-    suspend fun searchImagesAsync(texts: List<String>): List<Icon> = withContext (Dispatchers.IO + SupervisorJob()) {
+    suspend fun searchImagesAsync(texts: List<String>): List<Icon> = withContext (Dispatchers.IO) {
         texts.asyncFlatMap { text ->
             weaviateRepository.searchImageNearText(text, 10).map {
                 it.toIcon()
@@ -40,9 +40,11 @@ class IconService(
     }
 
     fun searchImagesFlow(texts: List<String>): Flow<Icon> = channelFlow {
-        texts.asyncFlatMap { text ->
-            weaviateRepository.searchImageNearText(text, 10).map {
-                send(it.toIcon())
+        texts.forEach { text ->
+            launch {
+                weaviateRepository.searchImageNearText(text, 10).map {
+                    send(it.toIcon())
+                }
             }
         }
     }.flowOn(Dispatchers.IO)

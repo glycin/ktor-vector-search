@@ -48,7 +48,9 @@ fun Application.configureRouting(
                     val texts = call.receive<IconSearchListBody>()
                     call.respondTextWriter(ContentType.Application.Json) {
                         iconService.searchImagesFlow(texts.searchTexts).collect { icon ->
-                            write(Json.encodeToString(icon))
+                            val item = Json.encodeToString(icon)
+                            LOG.info { "Sending image: ${item.takeLast(40)}" }
+                            write(item)
                             write("\n")
                             flush()
                         }

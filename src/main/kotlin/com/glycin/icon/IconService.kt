@@ -40,7 +40,7 @@ class IconService(
     }
 
     fun searchImagesFlow(texts: List<String>): Flow<Icon> = channelFlow {
-        texts.flatMap { text ->
+        texts.asyncFlatMap { text ->
             weaviateRepository.searchImageNearText(text, 10).map {
                 send(it.toIcon())
             }
